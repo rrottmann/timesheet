@@ -1,0 +1,6 @@
+mysql-connector
+pandas
+tabulate
+sqlalchemy
+more_itertools
+numpy
