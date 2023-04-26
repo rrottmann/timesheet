@@ -73,7 +73,10 @@ df_output = pd.DataFrame(data)
 it = iter(s)
 for x in it:
     # read the current and next timestamp
-    clock_in, clock_out = x, next(it)
+    try:
+        clock_in, clock_out = x, next(it)
+    except StopIteration:
+        break
     current_month = clock_in.month
     if not current_month == last_processed_month:
         last_processed_month = current_month
@@ -112,6 +115,7 @@ for x in it:
         pass
     except KeyError:
         pass
+
     daily_sum = None
 
 print(df_output.to_string())
