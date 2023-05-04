@@ -40,8 +40,7 @@ with open(filename, 'w') as f:
 # sort the values chronologically into a pandas series
 df1 = df["ts"].apply(pd.Timestamp)
 s = df1.sort_values(ascending=True)
-
-
+s.reset_index(drop=True, inplace=True)
 
 # initialize variables for clock-in/out
 clock_in = None
@@ -68,6 +67,18 @@ data = {
     'monthly_balance': []
 }
 df_output = pd.DataFrame(data)
+
+# if the time intervals are incomplete, add a timestamp
+if len(s) % 2 == 1:
+    clock_in = s.iloc[-1]
+    clock_out = pd.Timestamp(year=clock_in.year,
+                             month=clock_in.month,
+                             day=clock_in.day,
+                             hour=23,
+                             minute=59,
+                             second=59
+                             )
+    s.loc[len(s) + 1] = clock_out
 
 # iterate over all timestamps in the series
 it = iter(s)
