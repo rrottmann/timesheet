@@ -133,3 +133,21 @@ print(df_output.to_string())
 filename = "report.csv"
 with open(filename, 'w') as f:
     f.write(df_output.to_csv(lineterminator='\n'))
+
+# Group the DataFrame by day and calculate the maximum value of the time interval column for each day
+max_time_interval_per_day = df_output.groupby(df_output['clock_in'].dt.date)['daily_balance'].max()
+
+# Write the maximum time intervals as a separate report
+filename = "max_time_interval_per_day.csv"
+with open(filename, 'w') as f:
+    f.write(max_time_interval_per_day.to_csv(lineterminator='\n'))
+
+# Calculate the mean value of the maximum time interval values
+current_utc_timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3] + 'Z'
+mean_hours = round(max_time_interval_per_day.mean().total_seconds() / 3600, 2)
+
+# Write the mean hours a day as a separate report
+print(f"Mean hours per day: {mean_hours}")
+filename = "mean_hours_per_day.csv"
+with open(filename, 'a') as f:
+    f.write(f"{current_utc_timestamp};{str(mean_hours)}")
